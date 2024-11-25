@@ -1,0 +1,145 @@
+.parent {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+    min-height: 100svh;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .infoSection {
+    grid-area: 1 / 1 / 2 / 4;
+    padding: 2rem;
+  }
+  
+  .actionButtons {
+    grid-area: 1 / 4 / 2 / 5;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    .button{
+        height: 50% !important;
+    }
+  }
+  
+  .mapSection {
+    grid-area: 3 / 1 / 4 / 5;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    overflow: hidden;
+  }
+  
+  .carouselSection {
+    grid-area: 2 / 1 / 3 / 5;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .randomizeButton {
+    grid-area: 4 / 3 / 5 / 5;
+  }
+  
+  .filterButton {
+    grid-area: 4 / 1 / 5 / 3;
+  }
+  
+  /* Styles for components */
+  .title {
+    font-size: 2rem;
+    color: #6e90ff;
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+  }
+  
+  .address {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .button {
+    display: inline-block;
+    padding: 2rem 2rem;
+    background-color: #4169e1;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .button:hover {
+    background-color: #3258d3;
+  }
+  
+  .carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 0;
+    height: 100%;
+  }
+  
+  .carouselImage {
+    flex: 0 0 300px;
+    height: 300px;
+    object-fit: cover;
+    scroll-snap-align: start;
+  }
+  
+  .noImages {
+    text-align: center;
+    padding: 2rem;
+    background-color: #ce503d;
+  }
+  
+  .randomizeButton,
+  .filterButton {
+    width: 100%;
+    height: 100%;
+    padding: 2rem 2rem;
+    background-color: #4169e1;
+    color: white;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .filterButton, .mapButton{
+    background-color: #4169e13a;
+    color: #666;
+
+    & svg {
+        fill : #6e90ff;
+    }
+  }
+  
+  .randomizeButton:hover,
+  .filterButton:hover {
+    background-color: #3258d3;
+  }
+  
+  @media (max-width: 768px) {
+    .parent {
+      grid-template-rows: auto auto 1fr auto;
+      gap: 0;
+    }
+  
+    .actionButtons {
+      grid-area: 1 / 4 / 2 / 5;
+    }
+  
+    .button {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+  }
