@@ -55,3 +55,7 @@ a {
 div:has(> .gm-style-cc){
     display: none !important;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
