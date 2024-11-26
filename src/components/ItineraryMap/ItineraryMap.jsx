@@ -133,6 +133,9 @@ const ItineraryMap = ({ userLocation = { lat: 45.6016644, lng: -73.5584176 }, re
         width: '100%',
         height: '100%',
         overflow: 'hidden',
+        borderRadius: '10px',
+        border: '0',
+        outline: 'none',
       }}
     />
   );

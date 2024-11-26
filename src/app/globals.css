@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -8,6 +10,10 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+*{
+  font-family: "Outfit", sans-serif;
 }
 
 html,
@@ -39,4 +45,13 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+
+.gmnoprint .gm-style-cc{
+    display: none !important;
+}
+
+div:has(> .gm-style-cc){
+    display: none !important;
 }
