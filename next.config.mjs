@@ -41,7 +41,8 @@ const withPWA = NextPWA({
     }
   ],
   buildExcludes: [/middleware-manifest\.json$/],
-  precachePages: ['/'],
+  cacheId: 'aleoresto-v1',
+  swSrc: 'public/sw.js',
   fallbacks: {
     document: '/_offline'
   }
