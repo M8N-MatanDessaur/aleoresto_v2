@@ -1,0 +1,50 @@
+{
+    "id": "/",
+    "name": "aléoresto",
+    "short_name": "aléoresto",
+    "description": "Discover the quirkiest and most appetizing restaurants in town with aléoresto, the app that will make your taste buds dance with joy!",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFFFFF",
+    "theme_color": "#000000",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "/logo.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/logo.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Home",
+        "url": "/",
+        "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+      }
+    ],
+    "lang": "en",
+    "dir": "ltr",
+    "prefer_related_applications": false,
+    "categories": [
+      "food",
+      "lifestyle",
+      "restaurant"
+    ],
+    "screenshots": [
+      {
+        "src": "/logo.png",
+        "sizes": "1200x630",
+        "type": "image/png",
+        "label": "aléoresto Logo"
+      }
+    ],
+    "scope": "/",
+    "related_applications": []
+  }
