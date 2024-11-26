@@ -66,7 +66,7 @@ const AleorestoResult = ({ data, onRandomize, onFilter, setFilters, error }) => 
 
         {/* Action Buttons */}
         <div className={styles.actionButtons}>
-          {website && website.includes('https://') &&  (
+          {website && (website.includes('https://') || website.includes('www.')) &&  (
             <motion.a
               href={website}
               target="_blank"
