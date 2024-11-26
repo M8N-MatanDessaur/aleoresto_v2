@@ -1,0 +1,187 @@
+.parent {
+    display: grid;
+    grid-template-columns: 2fr 4fr;
+    min-height: 100svh;
+    margin: 0 auto;
+  }
+  
+  .leftColumn {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    height: 100vh;
+    padding: 2rem;
+    gap: 2rem;
+  }
+  
+  .infoSection {
+    grid-row: 1;
+  }
+  
+  .title {
+    font-size: 4rem;
+    color: #6e90ff;
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+  }
+  
+  .address {
+    color: #666;
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .actionButtons {
+    grid-row: 2;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background-color: #4169e1;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border-radius: 10px;
+  }
+  
+  .button:hover {
+    background-color: #3258d3;
+  }
+  
+  .mapButton {
+    background-color: #4169e13a;
+    color: #666;
+  }
+  
+  .mapButton svg {
+    fill: #6e90ff;
+  }
+  
+  .carouselSection {
+    grid-row: 3;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    height: 100%;
+    padding: 10px;
+    -ms-overflow-style: none;
+  }
+  
+  .carouselImage {
+    flex: 0 0 250px;
+    object-fit: cover;
+    scroll-snap-align: start;
+    border-radius: 10px;
+  }
+  
+  .noImages {
+    text-align: center;
+    padding: 2rem;
+    background-color: #ce503d;
+    color: white;
+    border-radius: 10px;
+  }
+  
+  .buttonContainer {
+    grid-row: 4;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .filterButton,
+  .randomizeButton {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background-color: #4169e1;
+    color: white;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 10px;
+  }
+  
+  .filterButton {
+    background-color: #4169e13a;
+    color: #666;
+  }
+  
+  .filterButton svg {
+    fill: #6e90ff;
+  }
+  
+  .randomizeButton:hover,
+  .filterButton:hover {
+    background-color: #3258d3;
+  }
+  
+  .mapSection {
+    height: 100vh;
+    width: 100%;
+  }
+  
+  /* Optional: Custom scrollbar for the left column */
+  .leftColumn {
+    overflow-y: auto;
+    scrollbar-width: 2px;
+    scrollbar-color: #4169e1 #0a0a0a;
+  }
+  
+  .leftColumn::-webkit-scrollbar {
+    width: 2px;
+    display: block !important;
+  }
+  
+  .leftColumn::-webkit-scrollbar-track {
+    background: #0a0a0a;
+  }
+  
+  .leftColumn::-webkit-scrollbar-thumb {
+    background-color: #4169e1;
+    border-radius: 50px;
+    border: 2px solid #f0f0f0;
+  }
+  
+  /* Handle overflowing content */
+  .leftColumn > * {
+    min-width: 0;
+    min-height: 0;
+  }
+  
+  /* Make layout more compact on smaller desktops */
+  @media (max-width: 1200px) {
+    .leftColumn {
+      padding: 1rem;
+      gap: 1rem;
+    }
+  
+    .button,
+    .filterButton,
+    .randomizeButton {
+      padding: 0.75rem;
+    }
+  
+    .carouselImage {
+      flex: 0 0 200px;
+      height: 200px;
+    }
+  }
+  
+  /* Ensure map takes full height */
+  .mapSection > div {
+    height: 100%;
+  }

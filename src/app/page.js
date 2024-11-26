@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import AleorestoResult from '../components/Aleoresto.jsx';
+import AleorestoResult from '../components/AleorestoMobile.jsx';
 import FiltersModal from '../components/FiltersModal/FiltersModal.jsx';
 import LoadingScreen from '@/components/LoadingScreen/LoadingScreen.jsx';
 import useAppStore from '../store/useAppStore';
 import useFiltersStore from '../store/useFiltersStore';
 import axios from 'axios';
+import AleorestoDesktop from '@/components/AleorestoDesktop.jsx';
+import Aleoresto from '@/components/Aleoresto.jsx';
 
 const App = () => {
   // Get state and actions from app store
@@ -78,14 +80,14 @@ const App = () => {
       {loading ? (
         <LoadingScreen />
       ) : error ? (
-        <AleorestoResult
+        <Aleoresto
         data={data}
         onRandomize={fetchRandomizedData}
         onFilter={() => setIsModalOpen(true)}
         error={'No results found. Filters were reset.'}
         />
       ) : data ? (
-        <AleorestoResult
+        <Aleoresto
           data={data}
           onRandomize={fetchRandomizedData}
           onFilter={() => setIsModalOpen(true)}
