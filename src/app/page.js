@@ -78,7 +78,12 @@ const App = () => {
       {loading ? (
         <LoadingScreen />
       ) : error ? (
-        <div>Error: {error}</div>
+        <AleorestoResult
+        data={data}
+        onRandomize={fetchRandomizedData}
+        onFilter={() => setIsModalOpen(true)}
+        error={'No results found. Filters were reset.'}
+        />
       ) : data ? (
         <AleorestoResult
           data={data}
