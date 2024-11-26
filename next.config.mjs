@@ -8,20 +8,47 @@ const withPWA = NextPWA({
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/www\.aleoresto\.ca\/.*/i,
-      handler: 'NetworkFirst',
+      handler: 'StaleWhileRevalidate',
       options: {
-        cacheName: 'aleoresto-cache',
+        cacheName: 'aleoresto-dynamic',
         expiration: {
           maxEntries: 32,
           maxAgeSeconds: 24 * 60 * 60 // 24 hours
         }
       }
+    },
+    {
+      urlPattern: /\.(js|css)$/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'aleoresto-static',
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+        }
+      }
+    },
+    {
+      urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico)$/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'aleoresto-images',
+        expiration: {
+          maxEntries: 64,
+          maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+        }
+      }
     }
-  ]
+  ],
+  buildExcludes: [/middleware-manifest\.json$/],
+  precachePages: ['/'],
+  fallbacks: {
+    document: '/_offline'
+  }
 });
 
 const config = {
-  // your other next.js config
+  // your existing config
 };
 
 export default withPWA(config);

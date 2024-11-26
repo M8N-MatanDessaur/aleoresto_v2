@@ -1,5 +1,20 @@
-import localFont from "next/font/local";
 import "./globals.css";
+
+function PWALifecycle() {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.addEventListener('controllerchange', () => {
+          if (window.confirm('New version available! Reload to update?')) {
+            window.location.reload();
+          }
+        });
+      });
+    }
+  }, []);
+
+  return null;
+}
 
 export const metadata = {
   metadataBase: new URL('https://www.aleoresto.ca'),
