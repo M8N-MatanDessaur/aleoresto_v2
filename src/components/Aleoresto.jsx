@@ -7,9 +7,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import ItineraryMap from './ItineraryMap/ItineraryMap';
 import styles from './AleorestoResult.module.css';
 import useFiltersStore from '../store/useFiltersStore';
+import useAppStore from '@/store/useAppStore';
 
 const AleorestoResult = ({ data, onRandomize, onFilter, setFilters, error }) => {
     const resetFilters = useFiltersStore((state) => state.resetFilters);
+    const {userLocation, restaurantLocation} = useAppStore();
   useEffect(() => {
     if (error) {
       toast.error(error, {
@@ -129,7 +131,7 @@ const AleorestoResult = ({ data, onRandomize, onFilter, setFilters, error }) => 
         {/* Map Section */}
         <div className={styles.mapSection}>
           <ItineraryMap
-            userLocation={{ lat: 45.6016644, lng: -73.5584176 }}
+            userLocation={userLocation}
             restaurantLocation={location}
           />
         </div>
