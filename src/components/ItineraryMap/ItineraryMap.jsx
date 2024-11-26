@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const ItineraryMap = ({ userLocation = { lat: 45.6016644, lng: -73.5584176 }, restaurantLocation = { lat: 45.60062019999999, lng: -73.5635113 }, apiKey='AIzaSyD1QD5MMF_sfTYUZZemrJIxGZzcmnYGCOE' }) => {
+const ItineraryMap = ({ userLocation, restaurantLocation, apiKey='AIzaSyD1QD5MMF_sfTYUZZemrJIxGZzcmnYGCOE' }) => {
   const mapRef = useRef(null);
 
   useEffect(() => {
