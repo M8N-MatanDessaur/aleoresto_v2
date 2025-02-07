@@ -1,187 +1,183 @@
-.parent {
-    display: grid;
-    grid-template-columns: 2fr 4fr;
-    min-height: 100svh;
-    margin: 0 auto;
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.mapSection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.infoSection {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  max-width: 400px;
+  backdrop-filter: blur(8px);
+  background: var()
+}
+
+.title {
+  font-size: 2rem;
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.address {
+  color: var(--gray-600);
+  margin: 0;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carouselSection {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+  width: 400px;
+  background: var(--background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.carousel {
+  display: flex;
+  gap: 0.5rem;
+  height: 250px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carouselImage {
+  flex: 0 0 400px;
+  height: 250px;
+  object-fit: cover;
+  scroll-snap-align: start;
+}
+
+.carouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 11;
+  opacity: 1;
+}
+
+.carouselButton:active {
+  opacity: 0.6;
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carouselButton:hover {
+  opacity: 1;
+}
+
+.carouselButtonLeft {
+  left: 0.5rem;
+}
+
+.carouselButtonRight {
+  right: 0.5rem;
+}
+
+.actionButtons {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 10;
+  align-items: center;
+}
+
+.button,
+.filterButton {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+}
+
+.randomizeButton {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+}
+
+.filterButton {
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+
+.noImages {
+  text-align: center;
+  padding: 2rem;
+  background: var(--accent);
+  color: white;
+  border-radius: var(--border-radius-lg);
+}
+
+@media (max-width: 768px) {
+  .container {
+    display: none;
   }
-  
-  .leftColumn {
-    display: grid;
-    grid-template-rows: auto auto 1fr auto;
-    height: 100vh;
-    padding: 2rem;
-    gap: 2rem;
-  }
-  
-  .infoSection {
-    grid-row: 1;
-  }
-  
-  .title {
-    font-size: 4rem;
-    color: #6e90ff;
-    margin: 0 0 0.5rem 0;
-    font-weight: 500;
-  }
-  
-  .address {
-    color: #666;
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  
-  .actionButtons {
-    grid-row: 2;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .button {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    background-color: #4169e1;
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    border-radius: 10px;
-  }
-  
-  .button:hover {
-    background-color: #3258d3;
-  }
-  
-  .mapButton {
-    background-color: #4169e13a;
-    color: #666;
-  }
-  
-  .mapButton svg {
-    fill: #6e90ff;
-  }
-  
-  .carouselSection {
-    grid-row: 3;
-    width: 100%;
-    overflow: hidden;
-  }
-  
-  .carousel {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    height: 100%;
-    padding: 10px;
-    -ms-overflow-style: none;
-  }
-  
-  .carouselImage {
-    flex: 0 0 250px;
-    object-fit: cover;
-    scroll-snap-align: start;
-    border-radius: 10px;
-  }
-  
-  .noImages {
-    text-align: center;
-    padding: 2rem;
-    background-color: #ce503d;
-    color: white;
-    border-radius: 10px;
-  }
-  
-  .buttonContainer {
-    grid-row: 4;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .filterButton,
-  .randomizeButton {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    background-color: #4169e1;
-    color: white;
-    border: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    border-radius: 10px;
-  }
-  
-  .filterButton {
-    background-color: #4169e13a;
-    color: #666;
-  }
-  
-  .filterButton svg {
-    fill: #6e90ff;
-  }
-  
-  .randomizeButton:hover,
-  .filterButton:hover {
-    background-color: #3258d3;
-  }
-  
-  .mapSection {
-    height: 100vh;
-    width: 100%;
-  }
-  
-  /* Optional: Custom scrollbar for the left column */
-  .leftColumn {
-    overflow-y: auto;
-    scrollbar-width: 2px;
-    scrollbar-color: #4169e1 #0a0a0a;
-  }
-  
-  .leftColumn::-webkit-scrollbar {
-    width: 2px;
-    display: block !important;
-  }
-  
-  .leftColumn::-webkit-scrollbar-track {
-    background: #0a0a0a;
-  }
-  
-  .leftColumn::-webkit-scrollbar-thumb {
-    background-color: #4169e1;
-    border-radius: 50px;
-    border: 2px solid #f0f0f0;
-  }
-  
-  /* Handle overflowing content */
-  .leftColumn > * {
-    min-width: 0;
-    min-height: 0;
-  }
-  
-  /* Make layout more compact on smaller desktops */
-  @media (max-width: 1200px) {
-    .leftColumn {
-      padding: 1rem;
-      gap: 1rem;
-    }
-  
-    .button,
-    .filterButton,
-    .randomizeButton {
-      padding: 0.75rem;
-    }
-  
-    .carouselImage {
-      flex: 0 0 200px;
-      height: 200px;
-    }
-  }
-  
-  /* Ensure map takes full height */
-  .mapSection > div {
-    height: 100%;
-  }
+}
