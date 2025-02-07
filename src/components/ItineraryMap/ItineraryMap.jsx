@@ -1,143 +1,186 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
-const ItineraryMap = ({ userLocation, restaurantLocation, apiKey='AIzaSyD1QD5MMF_sfTYUZZemrJIxGZzcmnYGCOE' }) => {
+if (!mapboxgl.supported()) {
+  console.error('Your browser does not support Mapbox GL');
+}
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibWF0YW5kZXNzYXVyIiwiYSI6ImNtNnY4bzlpazA1YTEyaXExb2ZjdGF4MzIifQ.W8r_dX4fShCX3YxzrTr04w';
+
+const ItineraryMap = ({ userLocation, restaurantLocation }) => {
+  const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
+  // Initialize map
   useEffect(() => {
-    if (!userLocation || !restaurantLocation || !apiKey) {
-      console.error('Invalid inputs for ItineraryMap');
+    if (!mapContainerRef.current || mapRef.current) return;
+
+    try {
+      const map = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: 'mapbox://styles/mapbox/dark-v11',
+        center: [-73.5673, 45.5017],
+        zoom: 12,
+        attributionControl: false,
+        preserveDrawingBuffer: true
+      });
+
+      map.on('load', () => {
+        console.log('Map loaded successfully');
+        setMapLoaded(true);
+      });
+
+      map.on('error', (e) => {
+        console.error('Mapbox error:', e);
+      });
+
+      mapRef.current = map;
+
+      return () => {
+        map.remove();
+        mapRef.current = null;
+      };
+    } catch (error) {
+      console.error('Error initializing map:', error);
+    }
+  }, []);
+
+  // Handle location updates
+  useEffect(() => {
+    const map = mapRef.current;
+    
+    if (!map || !mapLoaded || !userLocation?.lat || !restaurantLocation?.lat) {
       return;
     }
 
-    const loadMap = () => {
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: userLocation,
-        zoom: 8,
-        disableDefaultUI: true,
-        styles: [
-          {
-            elementType: 'geometry',
-            stylers: [{ color: '#212121' }],
-          },
-          {
-            elementType: 'labels.icon',
-            stylers: [{ visibility: 'off' }],
-          },
-          {
-            elementType: 'labels.text.fill',
-            stylers: [{ color: '#757575' }],
-          },
-          {
-            elementType: 'labels.text.stroke',
-            stylers: [{ color: '#212121' }],
-          },
-          {
-            featureType: 'administrative',
-            elementType: 'geometry',
-            stylers: [{ color: '#757575' }],
-          },
-          {
-            featureType: 'poi',
-            elementType: 'labels.text.fill',
-            stylers: [{ color: '#757575' }],
-          },
-          {
-            featureType: 'poi.park',
-            elementType: 'geometry',
-            stylers: [{ color: '#181818' }],
-          },
-          {
-            featureType: 'road',
-            elementType: 'geometry.fill',
-            stylers: [{ color: '#2c2c2c' }],
-          },
-          {
-            featureType: 'road',
-            elementType: 'geometry.stroke',
-            stylers: [{ color: '#212121' }],
-          },
-          {
-            featureType: 'road',
-            elementType: 'labels.text.fill',
-            stylers: [{ color: '#9e9e9e' }],
-          },
-          {
-            featureType: 'water',
-            elementType: 'geometry',
-            stylers: [{ color: '#000000' }],
-          },
-          {
-            featureType: 'water',
-            elementType: 'labels.text.fill',
-            stylers: [{ color: '#3d3d3d' }],
-          },
-        ],
-      });
+    try {
+      // Clear existing markers and route
+      const existingMarkers = document.querySelectorAll('.mapboxgl-marker');
+      existingMarkers.forEach(marker => marker.remove());
 
-      const directionsService = new window.google.maps.DirectionsService();
-      const directionsRenderer = new window.google.maps.DirectionsRenderer({
-        map: map,
-        suppressMarkers: true, // Removes default markers for customization
-      });
+      if (map.getSource('route')) {
+        map.removeLayer('route');
+        map.removeSource('route');
+      }
 
-      directionsService.route(
-        {
-          origin: userLocation,
-          destination: restaurantLocation,
-          travelMode: 'DRIVING',
-        },
-        (result, status) => {
-          if (status === 'OK') {
-            directionsRenderer.setDirections(result);
+      // Remove existing user location circle if it exists
+      if (map.getSource('user-location')) {
+        map.removeLayer('user-location-outline');
+        map.removeLayer('user-location-inner');
+        map.removeSource('user-location');
+      }
 
-            const originMarker = new window.google.maps.Marker({
-              position: userLocation,
-              map: map,
-              icon: {
-                path: window.google.maps.SymbolPath.CIRCLE,
-                scale: 10,
-                fillColor: '#007bff',
-                fillOpacity: 1,
-                strokeWeight: 2,
-                strokeColor: '#fff',
-              },
-            });
-
-            const destinationMarker = new window.google.maps.Marker({
-              position: restaurantLocation,
-              map: map,
-            });
-          } else {
-            console.error('Directions request failed:', status);
+      // Add user location as a circle
+      map.addSource('user-location', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [userLocation.lng, userLocation.lat]
           }
         }
-      );
-    };
+      });
 
-    if (!window.google || !window.google.maps) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = loadMap;
-      document.head.appendChild(script);
-    } else {
-      loadMap();
+      // Add outer circle (blue outline)
+      map.addLayer({
+        id: 'user-location-outline',
+        type: 'circle',
+        source: 'user-location',
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#007bff',
+          'circle-opacity': 0.4,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#007bff'
+        }
+      });
+
+      // Add inner circle (solid blue)
+      map.addLayer({
+        id: 'user-location-inner',
+        type: 'circle',
+        source: 'user-location',
+        paint: {
+          'circle-radius': 5,
+          'circle-color': '#007bff',
+          'circle-opacity': 1
+        }
+      });
+
+      // Add restaurant marker (red pin)
+      new mapboxgl.Marker({ 
+        color: '#ff4444',
+        scale: 1.2 // Slightly larger pin
+      })
+        .setLngLat([restaurantLocation.lng, restaurantLocation.lat])
+        .addTo(map);
+
+      // Fit bounds
+      const bounds = new mapboxgl.LngLatBounds()
+        .extend([userLocation.lng, userLocation.lat])
+        .extend([restaurantLocation.lng, restaurantLocation.lat]);
+
+      map.fitBounds(bounds, {
+        padding: 50,
+        maxZoom: 15,
+        duration: 0
+      });
+
+      // Add route
+      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation.lng},${userLocation.lat};${restaurantLocation.lng},${restaurantLocation.lat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
+      
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.routes?.[0]) {
+            map.addSource('route', {
+              type: 'geojson',
+              data: {
+                type: 'Feature',
+                properties: {},
+                geometry: data.routes[0].geometry
+              }
+            });
+
+            map.addLayer({
+              id: 'route',
+              type: 'line',
+              source: 'route',
+              layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+              },
+              paint: {
+                'line-color': '#007bff',
+                'line-width': 4,
+                'line-opacity': 0.75
+              }
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching route:', error);
+        });
+    } catch (error) {
+      console.error('Error updating map:', error);
     }
-  }, [userLocation, restaurantLocation, apiKey]);
+  }, [mapLoaded, userLocation, restaurantLocation]);
 
   return (
-    <div
-      ref={mapRef}
-      style={{
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
-        borderRadius: '10px',
-        border: '0',
-        outline: 'none',
-      }}
-    />
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div
+        ref={mapContainerRef}
+        style={{
+          width: '100%',
+          height: '100%',
+          borderRadius: '10px',
+          overflow: 'hidden'
+        }}
+      />
+    </div>
   );
 };
 
