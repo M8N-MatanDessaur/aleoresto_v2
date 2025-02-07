@@ -8,10 +8,30 @@ if (!mapboxgl.supported()) {
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0YW5kZXNzYXVyIiwiYSI6ImNtNnY4bzlpazA1YTEyaXExb2ZjdGF4MzIifQ.W8r_dX4fShCX3YxzrTr04w';
 
+// Custom hook for media query
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const media = window.matchMedia(query);
+      setMatches(media.matches);
+
+      const listener = () => setMatches(media.matches);
+      media.addEventListener('change', listener);
+
+      return () => media.removeEventListener('change', listener);
+    }
+  }, [query]);
+
+  return matches;
+};
+
 const ItineraryMap = ({ userLocation, restaurantLocation }) => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 769px)');
 
   // Initialize map
   useEffect(() => {
@@ -22,9 +42,11 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
         container: mapContainerRef.current,
         style: 'mapbox://styles/mapbox/dark-v11',
         center: [-73.5673, 45.5017],
-        zoom: 12,
+        zoom: 10,
         attributionControl: false,
-        preserveDrawingBuffer: true
+        preserveDrawingBuffer: true,
+        pitch: isDesktop ? 60 : 0, // Increased tilt
+        bearing: isDesktop ? -35 : 0 // Same rotation
       });
 
       map.on('load', () => {
@@ -45,7 +67,19 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
     } catch (error) {
       console.error('Error initializing map:', error);
     }
-  }, []);
+  }, [isDesktop]); // Re-initialize when screen size changes
+
+  // Update map tilt when screen size changes
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+
+    map.easeTo({
+      pitch: isDesktop ? 60 : 0,
+      bearing: isDesktop ? -35 : 0,
+      duration: 1000
+    });
+  }, [isDesktop, mapLoaded]);
 
   // Handle location updates
   useEffect(() => {
@@ -126,7 +160,9 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
       map.fitBounds(bounds, {
         padding: 50,
         maxZoom: 15,
-        duration: 0
+        duration: 0,
+        pitch: isDesktop ? 60 : 0,
+        bearing: isDesktop ? -35 : 0
       });
 
       // Add route
@@ -167,7 +203,7 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
     } catch (error) {
       console.error('Error updating map:', error);
     }
-  }, [mapLoaded, userLocation, restaurantLocation]);
+  }, [mapLoaded, userLocation, restaurantLocation, isDesktop]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
