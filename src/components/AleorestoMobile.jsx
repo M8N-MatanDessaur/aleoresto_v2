@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,6 +12,19 @@ import useAppStore from '@/store/useAppStore';
 const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => {
     const resetFilters = useFiltersStore((state) => state.resetFilters);
     const {userLocation, restaurantLocation} = useAppStore();
+    const carouselRef = useRef(null);
+
+    const scrollCarousel = (direction) => {
+      if (carouselRef.current) {
+        const scrollAmount = 300;
+        const newScrollPosition = carouselRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+        carouselRef.current.scrollTo({
+          left: newScrollPosition,
+          behavior: 'smooth'
+        });
+      }
+    };
+
   useEffect(() => {
     if (error) {
       toast.error(error, {
@@ -113,15 +126,35 @@ const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => 
         {/* Images Carousel */}
         <div className={styles.carouselSection}>
           {photos && photos.length > 0 ? (
-            <div className={styles.carousel}>
-              {photos.map((photo, index) => (
-                <img
-                  key={index}
-                  src={photo}
-                  alt={`Photo ${index + 1}`}
-                  className={styles.carouselImage}
-                />
-              ))}
+            <div className={styles.carouselContainer}>
+              <button 
+                className={`${styles.carouselButton} ${styles.carouselButtonLeft}`}
+                onClick={() => scrollCarousel('left')}
+                aria-label="Previous image"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <div className={styles.carousel} ref={carouselRef}>
+                {photos.map((photo, index) => (
+                  <img
+                    key={index}
+                    src={photo}
+                    alt={`Photo ${index + 1}`}
+                    className={styles.carouselImage}
+                  />
+                ))}
+              </div>
+              <button 
+                className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
+                onClick={() => scrollCarousel('right')}
+                aria-label="Next image"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
             </div>
           ) : (
             <div className={styles.noImages}>No images available</div>

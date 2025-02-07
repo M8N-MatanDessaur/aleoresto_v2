@@ -1,152 +1,256 @@
 .parent {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    grid-column-gap: 0;
-    grid-row-gap: 0;
-    min-height: 100svh;
-    max-width: 1200px;
-    margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+  min-height: 100svh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem;
+}
+
+.infoSection {
+  grid-area: 1 / 1 / 2 / 4;
+  padding: 1rem;
+  background: var(--gray-100);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transform-origin: center;
+  transition: var(--transition);
+}
+
+.actionButtons {
+  grid-area: 1 / 4 / 2 / 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actionButtons .button {
+  height: calc(50% - 0.25rem);
+  border-radius: var(--border-radius-md);
+  background: var(--primary);
+  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.actionButtons .button:active {
+  background: var(--primary-light);
+}
+
+.mapSection {
+  grid-area: 3 / 1 / 4 / 5;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.carouselSection {
+  grid-area: 2 / 1 / 3 / 5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.carousel {
+  display: flex;
+  gap: 0.5rem;
+  height: 100%;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carouselButton:active {
+  transform: translateY(-50%) scale(0.95);
+  background: var(--primary-light);
+}
+
+.carouselButtonLeft {
+  left: 0.5rem;
+}
+
+.carouselButtonRight {
+  right: 0.5rem;
+}
+
+.carouselImage {
+  flex: 0 0 250px;
+  height: 250px;
+  object-fit: cover;
+  scroll-snap-align: start;
+  border-radius: var(--border-radius-lg);
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.randomizeButton,
+.filterButton {
+  grid-area: 4 / 3 / 5 / 5;
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  height: 4rem;
+  font-size: 1.125rem;
+  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.randomizeButton {
+  background: var(--primary);
+  color: white;
+}
+
+.randomizeButton:active {
+  background: var(--primary-light);
+}
+
+.filterButton {
+  grid-area: 4 / 1 / 5 / 3;
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+
+.filterButton:active {
+  background: var(--gray-300);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-weight: 500;
+  border-radius: var(--border-radius-md);
+  gap: 0.5rem;
+  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button:active {
+  background: var(--primary-light);
+}
+
+.title {
+  font-size: 1.875rem;
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.address {
+  color: var(--gray-500);
+  margin: 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.noImages {
+  text-align: center;
+  padding: 2rem;
+  background: var(--accent);
+  color: white;
+  border-radius: var(--border-radius-lg);
+  animation: pulse 2s infinite;
+}
+
+.mapButton {
+  background: var(--gray-200);
+  color: var(--gray-600);
+  border-bottom-left-radius: var(--border-radius-lg);
+}
+
+@media (max-width: 768px) {
+  .parent {
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.5rem;
+    padding: 0.25rem;
   }
-  
+
   .infoSection {
-    grid-area: 1 / 1 / 2 / 4;
-    padding: 2rem;
+    padding: 0.75rem;
   }
-  
+
   .actionButtons {
     grid-area: 1 / 4 / 2 / 5;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  }
 
-    .button{
-        height: 50% !important;
-    }
-  }
-  
-  .mapSection {
-    grid-area: 3 / 1 / 4 / 5;
-    width: 100%;
-    height: 100%;
-    min-height: 200px;
-    overflow: hidden;
-    border-radius: 10px;
-    padding: 0 10px 10px 10px;
-  }
-  
-  .carouselSection {
-    grid-area: 2 / 1 / 3 / 5;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  
-  .randomizeButton {
-    grid-area: 4 / 3 / 5 / 5;
-  }
-  
-  .filterButton {
-    grid-area: 4 / 1 / 5 / 3;
-  }
-  
-  /* Styles for components */
-  .title {
-    font-size: 2rem;
-    color: #6e90ff;
-    margin: 0 0 0.5rem 0;
-    font-weight: 500;
-  }
-  
-  .address {
-    color: #666;
-    margin: 0;
-    font-size: 1rem;
-  }
-  
   .button {
-    display: inline-block;
-    padding: 2rem 2rem;
-    background-color: #4169e1;
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0.75rem;
+    font-size: 0.875rem;
   }
-  
-  .button:hover {
-    background-color: #3258d3;
+
+  .title {
+    font-size: 1.5rem;
   }
-  
-  .carousel {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    height: 100%;
-    padding: 10px;
+
+  .address {
+    font-size: 0.875rem;
   }
-  
+
+  .carouselButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carouselButtonLeft {
+    left: 0.5;
+  }
+
+  .carouselButtonRight {
+    right: 0.5rem;
+  }
+
   .carouselImage {
-    flex: 0 0 250px;
-    height: 250px;
-    object-fit: cover;
-    scroll-snap-align: start;
-    border-radius: 10px;
+    flex: 0 0 200px;
+    height: 200px;
   }
-  
-  .noImages {
-    text-align: center;
-    padding: 2rem;
-    background-color: #ce503d;
-  }
-  
+
   .randomizeButton,
   .filterButton {
-    width: 100%;
-    height: 100%;
-    padding: 2rem 2rem;
-    background-color: #4169e1;
-    color: white;
-    border: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    height: 3.5rem;
+    font-size: 1rem;
   }
-
-  .filterButton, .mapButton{
-    background-color: #4169e13a;
-    color: #666;
-
-    & svg {
-        fill : #6e90ff;
-    }
-  }
-
-  .mapButton{
-    border-bottom-left-radius: 10px;
-  }
-  
-  .randomizeButton:hover,
-  .filterButton:hover {
-    background-color: #3258d3;
-  }
-  
-  @media (max-width: 768px) {
-    .parent {
-      grid-template-rows: auto auto 1fr auto;
-      gap: 0;
-    }
-  
-    .actionButtons {
-      grid-area: 1 / 4 / 2 / 5;
-    }
-  
-    .button {
-      padding: 0.5rem;
-      font-size: 0.9rem;
-    }
-  }
+}
