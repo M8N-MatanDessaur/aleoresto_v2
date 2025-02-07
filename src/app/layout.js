@@ -51,7 +51,7 @@ export const metadata = {
     url: 'https://www.aleoresto.ca',
     images: [
       {
-        url: '/logo.png',
+        url: '/logo.svg',
         width: 1200,
         height: 630,
         alt: 'aléoresto Logo',
@@ -61,7 +61,7 @@ export const metadata = {
   icons: {
     icon: '/logo.ico',
     apple: [
-      { url: '/logo.png' },
+      { url: '/logo.svg' },
     ],
   },
   other: {
