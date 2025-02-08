@@ -6,7 +6,7 @@ async function fetchRestaurants(location, radius, filters) {
     const query = filters?.keywords?.join(" ") || ""; // Combine keywords for query
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.lat},${location.lng}&radius=${radius}&type=restaurant&keyword=${query}&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.lat},${location.lng}&radius=${radius}&type=restaurant&keyword=${query}&opennow=true&key=${apiKey}`;
     const response = await axios.get(url);
 
     if (response.data.status !== "OK") {
@@ -45,6 +45,7 @@ async function fetchRestaurantDetails(placeId) {
           )
         : [],
       openingHours: result.opening_hours?.weekday_text || [],
+      isOpen: result.opening_hours?.open_now || false,
       website: result.website || "No Website Available",
       googleMapsUrl: result.url || "No URL Available",
       types: result.types || [],
