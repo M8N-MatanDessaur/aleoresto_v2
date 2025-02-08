@@ -236,7 +236,7 @@
   gap: 8px;
 }
 
-.settingItem label {
+.settingItem label, .label {
   font-weight: 500;
   color: #ccc;
 }

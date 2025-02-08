@@ -185,7 +185,7 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
                 </div>
 
                 {/* Category Tabs */}
-                <h4 className={styles.settingsTitle}>Filters Groups</h4>
+                <label className={styles.label}>Filters Groups</label>
                 <div className={styles.categoryTabsContainer}>
                     <button 
                         className={styles.navigationButton} 
@@ -237,7 +237,6 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
 
                 {/* Settings */}
                 <div className={styles.settingsSection}>
-                    <h4 className={styles.settingsTitle}>Search Range & Price</h4>
                     <div className={styles.settingItem}>
                         <label>Travel Mode</label>
                         <select
