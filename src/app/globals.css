@@ -147,3 +147,7 @@ div:has(> .gm-style-cc) {
 .pulse {
   animation: pulse 1.5s infinite;
 }
+
+.mapboxgl-ctrl-bottom-left {
+  display: none !important;
+}
