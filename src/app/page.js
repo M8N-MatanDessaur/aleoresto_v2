@@ -93,7 +93,7 @@ const App = () => {
           onFilter={() => setIsModalOpen(true)}
         />
       ) : (
-        <div>No results found.</div>
+        <LoadingScreen loading={true} />
       )}
 
       {isModalOpen && (

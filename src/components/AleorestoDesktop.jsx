@@ -26,7 +26,22 @@ const AleorestoDesktop = ({ data, onRandomize, onFilter, setFilters, error }) =>
   };
 
   if (!data) {
-    return <div>No data available.</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <motion.div
+          className={styles.loadingSpinner}
+          animate={{
+            rotate: 360
+          }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        <p>Finding your next favorite restaurant...</p>
+      </div>
+    );
   }
 
   const { name, photos, website, location, address, googleMapsUrl } = data.restaurant;
