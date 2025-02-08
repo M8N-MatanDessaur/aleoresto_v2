@@ -6,14 +6,38 @@ async function fetchRestaurants(location, radius, filters) {
     const query = filters?.keywords?.join(" ") || ""; // Combine keywords for query
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.lat},${location.lng}&radius=${radius}&type=restaurant&keyword=${query}&opennow=true&key=${apiKey}`;
+    // Define valid food establishment types
+    const foodTypes = [
+      'restaurant',
+      'cafe',
+      'bakery',
+      'bar',
+      'meal_takeaway',
+      'meal_delivery'
+    ].join('|');
+
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.lat},${location.lng}&radius=${radius}&type=${foodTypes}&keyword=${query}&opennow=true&key=${apiKey}`;
     const response = await axios.get(url);
 
     if (response.data.status !== "OK") {
       throw new Error(response.data.error_message || "Failed to fetch restaurants.");
     }
 
-    return response.data.results; // Return the list of restaurants
+    // Additional filtering to ensure we only get food-related places
+    const results = response.data.results.filter(place => {
+      const types = place.types || [];
+      // Exclude non-food establishments
+      const excludedTypes = ['gas_station', 'convenience_store', 'grocery_store', 'supermarket', 'liquor_store'];
+      const hasExcludedType = types.some(type => excludedTypes.includes(type));
+      
+      // Must have at least one food-related type
+      const foodRelatedTypes = ['restaurant', 'cafe', 'bakery', 'bar', 'meal_takeaway', 'meal_delivery', 'food'];
+      const hasFoodType = types.some(type => foodRelatedTypes.includes(type));
+      
+      return hasFoodType && !hasExcludedType;
+    });
+
+    return results;
   } catch (error) {
     console.error("Error fetching restaurants:", error.message);
     throw new Error("Failed to fetch restaurants. Please check your API key and parameters.");
@@ -126,8 +150,30 @@ exports.handler = async (event) => {
       };
     }
 
-    // Step 2: Pick a random restaurant
-    const randomRestaurant = restaurants[Math.floor(Math.random() * restaurants.length)];
+    // Filter restaurants based on price level
+    const filteredRestaurants = restaurants.filter(restaurant => {
+      // If no price_level is specified, include it in results
+      if (typeof restaurant.price_level === 'undefined') return true;
+      
+      // If price filter is not set, include all restaurants
+      if (!filters.price_range) return true;
+      
+      const [minPrice, maxPrice] = filters.price_range;
+      
+      // Include restaurant if its price level is less than or equal to the selected max price
+      // This means if user selects $$$$, it will include $, $$, $$$, and $$$$
+      return restaurant.price_level <= maxPrice;
+    });
+
+    if (filteredRestaurants.length === 0) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: "No restaurants found matching your price range." }),
+      };
+    }
+
+    // Step 2: Pick a random restaurant from filtered list
+    const randomRestaurant = filteredRestaurants[Math.floor(Math.random() * filteredRestaurants.length)];
 
     if (!randomRestaurant.place_id) {
       return {

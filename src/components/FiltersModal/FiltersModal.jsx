@@ -1,7 +1,7 @@
 // components/FiltersModal/FiltersModal.jsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import useFiltersStore from '../../store/useFiltersStore';
 import styles from './FiltersModal.module.css';
@@ -60,7 +60,28 @@ const predefinedKeywords = {
 const FiltersModal = ({ closeModal, onRandomize }) => {
     const [customKeyword, setCustomKeyword] = useState("");
     const [activeCategory, setActiveCategory] = useState("Popular");
-    
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+    const categoryTabsRef = useRef(null);
+
+    const scrollTabs = (direction) => {
+        if (categoryTabsRef.current) {
+            const scrollAmount = 200;
+            const newScrollPosition = categoryTabsRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+            categoryTabsRef.current.scrollTo({
+                left: newScrollPosition,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsDesktop(window.innerWidth > 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const filters = useFiltersStore((state) => state.filters);
     const { updateTransportMode, toggleKeyword, setPriceRange, resetFilters } = useFiltersStore();
@@ -84,22 +105,36 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
     };
 
     return (
-        <motion.div
-            className={styles.modal}
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        >
-            <div className={styles.modalContent}>
-                <div className={styles.modalHeader}>
-                    <h2>Filters</h2>
-                    <button onClick={closeModal} className={styles.closeIcon}>×</button>
-                </div>
+        <>
+            <motion.div
+                className={styles.overlay}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                exit={{ opacity: 0 }}
+                transition={{ 
+                    duration: 0.3,
+                }}
+                onClick={closeModal}
+            />
+            <motion.div
+                className={styles.modal}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ 
+                    duration: 0.2,
+                    ease: [0.16, 1, 0.3, 1]
+                }}
+            >
+                <div className={styles.modalContent}>
+                    <div className={styles.modalHeader}>
+                        <h2>Filters</h2>
+                        <button onClick={closeModal} className={styles.closeIcon}>×</button>
+                    </div>
 
-                {/* Selected Keywords */}
-                {filters.keywords.length > 0 && (
-                    <div className={styles.selectedKeywords}>
+                    {/* Selected Keywords */}
+                    {filters.keywords.length > 0 && (
+                        <div className={styles.selectedKeywords}>
                                             <button 
                             onClick={handleReset} 
                             className={styles.resetButton}
@@ -122,29 +157,66 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
                     </div>
                 )}
 
-                {/* Search Bar */}
+                {/* Search Input */}
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
+                        placeholder="Add custom keyword..."
                         value={customKeyword}
                         onChange={(e) => setCustomKeyword(e.target.value)}
-                        placeholder="Search or add custom keyword"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                addCustomKeyword();
+                            }
+                        }}
                         className={styles.searchInput}
-                        onKeyPress={(e) => e.key === 'Enter' && addCustomKeyword()}
                     />
+                    <button 
+                        className={styles.addButton}
+                        onClick={addCustomKeyword}
+                        disabled={!customKeyword.trim()}
+                        aria-label="Add keyword"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
                 </div>
 
                 {/* Category Tabs */}
-                <div className={styles.categoryTabs}>
-                    {Object.keys(predefinedKeywords).map((category) => (
-                        <button
-                            key={category}
-                            className={`${styles.categoryTab} ${activeCategory === category ? styles.activeTab : ''}`}
-                            onClick={() => setActiveCategory(category)}
-                        >
-                            {category}
-                        </button>
-                    ))}
+                <div className={styles.categoryTabsContainer}>
+                    <button 
+                        className={styles.navigationButton} 
+                        onClick={() => scrollTabs('left')}
+                        aria-label="Scroll left"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <div className={styles.categoryTabs} ref={categoryTabsRef}>
+                        {Object.keys(predefinedKeywords).map((category) => (
+                            <button
+                                key={category}
+                                className={`${styles.categoryTab} ${
+                                    activeCategory === category ? styles.activeTab : ""
+                                }`}
+                                onClick={() => setActiveCategory(category)}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
+                    <button 
+                        className={styles.navigationButton} 
+                        onClick={() => scrollTabs('right')}
+                        aria-label="Scroll right"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
                 </div>
 
                 {/* Keywords Grid */}
@@ -171,11 +243,11 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
                             onChange={(e) => updateTransportMode(e.target.value)}
                             className={styles.select}
                         >
-                            <option value="walking">Walking</option>
-                            <option value="driving">Driving</option>
-                            <option value="bicycling">Bicycling</option>
-                            <option value="transit">Transit</option>
-                            <option value="no-limit">No Limit</option>
+                            <option value="walking">Walking distance (up to 2 km)</option>
+                            <option value="bicycling">Biking distance (up to 5 km)</option>
+                            <option value="driving">Driving distance (up to 10 km)</option>
+                            <option value="transit">Public transit (up to 10 km)</option>
+                            <option value="no-limit">Any distance</option>
                         </select>
                     </div>
 
@@ -208,6 +280,7 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
                 </div>
             </div>
         </motion.div>
+        </>
     );
 };
 

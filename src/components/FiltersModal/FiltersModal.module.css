@@ -1,21 +1,29 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000;
+    z-index: 999;
+}
+
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 1000;
+    position: fixed;
+    background-color: transparent;
+    z-index: 1000;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
 }
 
 .modalContent {
-  background-color: #222;
+  background-color: rgba(34, 34, 34, 0.95);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  padding: 1.5rem;
   color: #fff;
-  padding: 20px;
-  border-radius: 20px 20px 0 0;
   height: 85%;
   display: flex;
   flex-direction: column;
@@ -72,10 +80,12 @@
 .searchContainer {
   position: relative;
   margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
 }
 
 .searchInput {
-  width: 100%;
+  flex: 1;
   padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid #444;
@@ -88,27 +98,73 @@
   color: #888;
 }
 
+.addButton {
+  background: #4169e1;
+  border: none;
+  border-radius: 12px;
+  width: 44px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.addButton:hover {
+  background: #5179f1;
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.categoryTabsContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .categoryTabs {
   display: flex;
   gap: 10px;
   overflow-x: auto;
   padding-bottom: 10px;
   min-height: 50px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
 
 .categoryTabs::-webkit-scrollbar {
-  width: 2px;
-  height: 2px;
-  display: block !important;
+  display: none;
 }
 
-.categoryTabs::-webkit-scrollbar-track {
-  background: #333;
+.navigationButton {
+  background: rgba(51, 51, 51, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-.categoryTabs::-webkit-scrollbar-thumb {
-  background-color: #6e90ff;
-  border-radius: 50px;
+.navigationButton:hover {
+  background: rgba(65, 105, 225, 0.8);
+}
+
+.navigationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .categoryTab {
@@ -186,12 +242,16 @@
 }
 
 .select {
-  padding: 12px;
+  padding: 12px 35px 12px 12px;
   border-radius: 12px;
   border: 1px solid #444;
   background-color: #333;
   color: white;
-  height: 50px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px;
 }
 
 .priceButtons {
@@ -265,6 +325,40 @@
 
 .applyButton:hover {
   background-color: #3258d3;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .modal {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 90vh;
+        border-top-left-radius: var(--border-radius-lg);
+        border-top-right-radius: var(--border-radius-lg);
+        display: block;
+    }
+
+    .modalContent {
+        border-top-left-radius: var(--border-radius-lg);
+        border-top-right-radius: var(--border-radius-lg);
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    .modal {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .modalContent {
+        max-width: 500px;
+        margin: auto;
+        border-radius: var(--border-radius-lg);
+    }
 }
 
 @media (max-width: 768px) {

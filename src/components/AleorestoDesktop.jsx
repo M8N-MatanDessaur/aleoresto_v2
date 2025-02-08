@@ -143,9 +143,19 @@ const AleorestoDesktop = ({ data, onRandomize, onFilter, setFilters, error }) =>
           rel="noopener noreferrer"
           className={styles.button}
         >
-          <svg width="25" height="25" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M20.34 3.03 20.5 3c.28 0 .5.22.5.5v15.12c0 .23-.15.41-.36.48L15 21l-6-2.1-5.34 2.07-.16.03c-.28 0-.5-.22-.5-.5V5.38c0-.23.15-.41.36-.48L9 3l6 2.1 5.34-2.07Z"></path>
-          </svg>
+          <svg
+              width="25"
+              height="25"
+              fill="#ffffff"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M20.34 3.03 20.5 3c.28 0 .5.22.5.5v15.12c0 .23-.15.41-.36.48L15 21l-6-2.1-5.34 2.07-.16.03c-.28 0-.5-.22-.5-.5V5.38c0-.23.15-.41.36-.48L9 3l6 2.1 5.34-2.07ZM9 16.78l6 2.11V7.22L9 5.11v11.67Z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
         </a>
         <button onClick={onRandomize} className={styles.randomizeButton}>
           <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
