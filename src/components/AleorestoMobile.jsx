@@ -10,20 +10,20 @@ import useFiltersStore from '../store/useFiltersStore';
 import useAppStore from '@/store/useAppStore';
 
 const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => {
-    const resetFilters = useFiltersStore((state) => state.resetFilters);
-    const {userLocation, restaurantLocation} = useAppStore();
-    const carouselRef = useRef(null);
+  const resetFilters = useFiltersStore((state) => state.resetFilters);
+  const { userLocation, restaurantLocation } = useAppStore();
+  const carouselRef = useRef(null);
 
-    const scrollCarousel = (direction) => {
-      if (carouselRef.current) {
-        const scrollAmount = 300;
-        const newScrollPosition = carouselRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
-        carouselRef.current.scrollTo({
-          left: newScrollPosition,
-          behavior: 'smooth'
-        });
-      }
-    };
+  const scrollCarousel = (direction) => {
+    if (carouselRef.current) {
+      const scrollAmount = 300;
+      const newScrollPosition = carouselRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+      carouselRef.current.scrollTo({
+        left: newScrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     if (error) {
@@ -94,25 +94,20 @@ const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => 
 
         {/* Action Buttons */}
         <div className={styles.actionButtons}>
-          {website && (website.includes('https://') || website.includes('www.')) &&  (
+          {website && (website.includes('https://') || website.includes('www.')) && (
             <motion.a
               href={website}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.button}
             >
-              <svg
-                width="25"
-                height="25"
-                fill="#ffffff"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5 5v14h14v-7h2v7c0 1.1-.9 2-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7v2H5Zm9 0V3h7v7h-2V6.41l-9.83 9.83-1.41-1.41L17.59 5H14Z"
-                  clipRule="evenodd"
-                ></path>
+              <svg width="25" height="25" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2.25A9.75 9.75 0 0 0 2.25 12c0 5.384 4.365 9.75 9.75 9.75 5.384 0 9.75-4.366 9.75-9.75 0-5.385-4.366-9.75-9.75-9.75Z"></path>
+                <path d="M12 2.25c-2.722 0-5.28 4.365-5.28 9.75 0 5.384 2.56 9.75 5.281 9.75 2.722 0 5.282-4.366 5.282-9.75 0-5.385-2.56-9.75-5.282-9.75Z"></path>
+                <path d="M5.5 5.5C7.293 6.773 9.55 7.532 12 7.532c2.451 0 4.708-.76 6.5-2.032"></path>
+                <path d="M18.5 18.5c-1.792-1.272-4.049-2.031-6.5-2.031-2.45 0-4.707.759-6.5 2.031"></path>
+                <path d="M12 2.25v19.5"></path>
+                <path d="M21.75 12H2.25"></path>
               </svg>
             </motion.a>
           )}
@@ -122,18 +117,8 @@ const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => 
             rel="noopener noreferrer"
             className={`${styles.button} ${styles.mapButton}`}
           >
-            <svg
-              width="25"
-              height="25"
-              fill="#ffffff"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M20.34 3.03 20.5 3c.28 0 .5.22.5.5v15.12c0 .23-.15.41-.36.48L15 21l-6-2.1-5.34 2.07-.16.03c-.28 0-.5-.22-.5-.5V5.38c0-.23.15-.41.36-.48L9 3l6 2.1 5.34-2.07ZM9 16.78l6 2.11V7.22L9 5.11v11.67Z"
-                clipRule="evenodd"
-              ></path>
+            <svg width="25" height="25" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="m12.71 2.29 9 9c.39.4.39 1.03 0 1.41l-9 9a.996.996 0 0 1-1.41 0l-9-9a.996.996 0 0 1 0-1.41l9-9a.996.996 0 0 1 1.41 0ZM14 12v2.5l3.5-3.5L14 7.5V10H9c-.55 0-1 .45-1 1v4h2v-3h4Z" clip-rule="evenodd"></path>
             </svg>
           </motion.a>
         </div>
@@ -142,13 +127,13 @@ const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => 
         <div className={styles.carouselSection}>
           {photos && photos.length > 0 ? (
             <div className={styles.carouselContainer}>
-              <button 
+              <button
                 className={`${styles.carouselButton} ${styles.carouselButtonLeft}`}
                 onClick={() => scrollCarousel('left')}
                 aria-label="Previous image"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
               <div className={styles.carousel} ref={carouselRef}>
@@ -161,13 +146,13 @@ const AleorestoMobile = ({ data, onRandomize, onFilter, setFilters, error }) => 
                   />
                 ))}
               </div>
-              <button 
+              <button
                 className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
                 onClick={() => scrollCarousel('right')}
                 aria-label="Next image"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             </div>

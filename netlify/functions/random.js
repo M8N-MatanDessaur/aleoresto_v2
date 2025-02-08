@@ -45,7 +45,7 @@ async function fetchRestaurants(location, radius, filters) {
 }
 
 // Helper function to fetch detailed restaurant information
-async function fetchRestaurantDetails(placeId) {
+async function fetchRestaurantDetails(placeId, userLocation, transportMode) {
   try {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,geometry,photos,price_level,rating,opening_hours,website,url,types&key=${apiKey}`;
@@ -71,7 +71,7 @@ async function fetchRestaurantDetails(placeId) {
       openingHours: result.opening_hours?.weekday_text || [],
       isOpen: result.opening_hours?.open_now || false,
       website: result.website || "No Website Available",
-      googleMapsUrl: result.url || "No URL Available",
+      googleMapsUrl: `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${result.geometry?.location.lat},${result.geometry?.location.lng}`,
       types: result.types || [],
       location: result.geometry?.location || null,
     };
@@ -183,7 +183,7 @@ exports.handler = async (event) => {
     }
 
     // Step 3: Fetch details of the random restaurant
-    const restaurantDetails = await fetchRestaurantDetails(randomRestaurant.place_id);
+    const restaurantDetails = await fetchRestaurantDetails(randomRestaurant.place_id, location, transportMode || "walking");
 
     // Step 4: Fetch itinerary details
     const itinerary = await fetchItinerary(
