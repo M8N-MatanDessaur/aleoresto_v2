@@ -161,7 +161,7 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
-                        placeholder="Add custom keyword..."
+                        placeholder="Add custom filter keyword..."
                         value={customKeyword}
                         onChange={(e) => setCustomKeyword(e.target.value)}
                         onKeyDown={(e) => {
