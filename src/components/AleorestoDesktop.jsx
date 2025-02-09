@@ -62,6 +62,7 @@ const AleorestoDesktop = ({ data, onRandomize, onFilter, setFilters, error }) =>
           userLocation={userLocation}
           restaurantLocation={location}
           restaurantDetails={data.restaurant}
+          googleMapsUrl={googleMapsUrl}
         />
       </div>
 

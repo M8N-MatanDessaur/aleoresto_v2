@@ -29,7 +29,7 @@ const useMediaQuery = (query) => {
   return matches;
 };
 
-const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails }) => {
+const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails, googleMapsUrl }) => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -40,8 +40,6 @@ const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails }) =
   // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
-
-    console.log('Restaurant Details:', restaurantDetails);
 
     try {
       const map = new mapboxgl.Map({
@@ -260,11 +258,11 @@ const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails }) =
             <span className={styles.dot}>•</span>
             <span>{travelInfo.distance}</span>
           </div>
-          {restaurantDetails?.phoneNumber && (
-            <a href={`tel:${restaurantDetails.phoneNumber}`} className={styles.callButton} title="Call Restaurant">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
+          {googleMapsUrl && (
+            <a href={googleMapsUrl} className={styles.callButton} title="Call Restaurant">
+             <svg width="25" height="25" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" d="m12.71 2.29 9 9c.39.4.39 1.03 0 1.41l-9 9a.996.996 0 0 1-1.41 0l-9-9a.996.996 0 0 1 0-1.41l9-9a.996.996 0 0 1 1.41 0ZM14 12v2.5l3.5-3.5L14 7.5V10H9c-.55 0-1 .45-1 1v4h2v-3h4Z" clipRule="evenodd"></path>
+            </svg>
             </a>
           )}
         </div>
