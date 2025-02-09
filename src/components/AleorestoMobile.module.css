@@ -27,6 +27,11 @@
   gap: 0.5rem;
 }
 
+/* if only one child, it takes the remaining space */
+.actionButtons > :only-child {
+  flex: 1;
+}
+
 .actionButtons .button {
   height: calc(50% - 0.25rem);
   border-radius: var(--border-radius-md);
