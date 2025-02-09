@@ -5,8 +5,10 @@
   --foreground: #f8fafc;
   --primary: #4169e1;
   --primary-light: #a5b4fc;
-  --secondary: #34d399;
-  --accent: #fbbf24;
+  --correct: #34d399;
+  --warning: #fbbf24;
+  --error: #ef4444;
+  --gray-50: #0f172a;
   --gray-100: #1e293b;
   --gray-200: #334155;
   --gray-300: #475569;
@@ -21,7 +23,6 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 
 * {
   font-family: "Outfit", sans-serif;
