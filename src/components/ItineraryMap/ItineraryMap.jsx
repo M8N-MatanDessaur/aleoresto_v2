@@ -243,10 +243,19 @@ const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails }) =
       {travelInfo && (
         <div className={styles.travelInfoContainer}>
           <div className={styles.travelInfo}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z" fill="currentColor"/>
-              <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
-            </svg>
+            {filters.transportMode === 'walking' ? (
+              <svg width="18" height="18" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M15.5 3.5c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2ZM7 23 9.8 8.9 8 9.6V13H6V8.3l5.05-2.14c.97-.41 2.09-.05 2.65.84l1 1.6C15.5 10 17.1 11 19 11v2c-2.2 0-4.2-1-5.5-2.5l-.6 3 2.1 2V23h-2v-6l-2.1-2-1.8 8H7Z" clipRule="evenodd"></path>
+              </svg>
+            ) : filters.transportMode === 'bicycling' ? (
+              <svg width="18" height="18" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M17.5 3.5c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2ZM0 17c0-2.8 2.2-5 5-5s5 2.2 5 5-2.2 5-5 5-5-2.2-5-5Zm5 3.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5ZM19.1 11c-2.1 0-3.8-.8-5.1-2.1l-.8-.8-2.4 2.4 2.2 2.3V19h-2v-5l-3.2-2.8c-.4-.3-.6-.8-.6-1.4 0-.5.2-1 .6-1.4l2.8-2.8c.3-.4.8-.6 1.4-.6.6 0 1.1.2 1.6.6l1.9 1.9c.9.9 2.1 1.5 3.6 1.5v2Zm-.1 1c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5Zm-3.5 5c0 1.9 1.6 3.5 3.5 3.5s3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5-3.5 1.6-3.5 3.5Z" clipRule="evenodd"></path>
+              </svg>
+            ) : (
+              <svg width="18" height="18" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M17.5 4c.66 0 1.22.42 1.42 1.01L21 11v8c0 .55-.45 1-1 1h-1c-.55 0-1-.45-1-1v-1H6v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-8l2.08-5.99C5.29 4.42 5.84 4 6.5 4h11ZM5 13.5c0 .83.67 1.5 1.5 1.5S8 14.33 8 13.5 7.33 12 6.5 12 5 12.67 5 13.5ZM17.5 15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm-11-9.5L5 10h14l-1.5-4.5h-11Z" clipRule="evenodd"></path>
+              </svg>
+            )}
             <span>{travelInfo.time}</span>
             <span className={styles.dot}>•</span>
             <span>{travelInfo.distance}</span>
