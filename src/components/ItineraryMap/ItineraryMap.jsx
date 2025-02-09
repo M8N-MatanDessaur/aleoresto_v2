@@ -55,6 +55,26 @@ const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails, goo
 
       map.on('load', () => {
         setMapLoaded(true);
+
+        // Add 3D building layer
+        map.addLayer({
+          'id': '3d-buildings',
+          'source': 'composite',
+          'source-layer': 'building',
+          'filter': ['==', 'extrude', 'true'],
+          'type': 'fill-extrusion',
+          'minzoom': 15,
+          'paint': {
+            'fill-extrusion-color': '#333333',
+            'fill-extrusion-height': [
+              'interpolate', ['linear'], ['zoom'],
+              15, 0,
+              15.05, ['get', 'height']
+            ],
+            'fill-extrusion-base': ['get', 'min_height'],
+            'fill-extrusion-opacity': 0.8
+          }
+        });
       });
 
       map.on('error', (e) => {
