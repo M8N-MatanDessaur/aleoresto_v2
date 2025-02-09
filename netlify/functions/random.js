@@ -89,7 +89,7 @@ async function fetchItinerary(userLocation, destinationLocation, transportMode) 
       const params = {
         origin: `${userLocation.lat},${userLocation.lng}`,
         destination: `${destinationLocation.lat},${destinationLocation.lng}`,
-        mode: transportMode || "walking",
+        mode: transportMode === 'no-limit' ? 'driving' : transportMode || "walking",
         key: apiKey,
       };
   

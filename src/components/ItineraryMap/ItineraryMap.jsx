@@ -88,7 +88,7 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
   // Handle location updates
   useEffect(() => {
     const map = mapRef.current;
-    
+
     if (!map || !mapLoaded || !userLocation?.lat || !restaurantLocation?.lat) {
       return;
     }
@@ -149,7 +149,7 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
       });
 
       // Add restaurant marker (red pin)
-      new mapboxgl.Marker({ 
+      new mapboxgl.Marker({
         color: '#ff4444',
         scale: 1.2 // Slightly larger pin
       })
@@ -170,7 +170,19 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
       });
 
       // Add route
-      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation.lng},${userLocation.lat};${restaurantLocation.lng},${restaurantLocation.lat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
+      const getMapboxProfile = (mode) => {
+        switch (mode) {
+          case 'walking':
+            return 'walking';
+          case 'bicycling':
+            return 'cycling';
+          default:
+            return 'driving';
+        }
+      };
+
+      const profile = getMapboxProfile(filters.transportMode);
+      const url = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${userLocation.lng},${userLocation.lat};${restaurantLocation.lng},${restaurantLocation.lat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
       console.log(url);
       fetch(url)
         .then(response => response.json())
@@ -230,19 +242,16 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
         <div className={styles.travelInfo}>
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
             {filters.transportMode === 'walking' ? (
-              <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"></path>
+              <path fill-rule="evenodd" d="M15.5 3.5c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2ZM7 23 9.8 8.9 8 9.6V13H6V8.3l5.05-2.14c.97-.41 2.09-.05 2.65.84l1 1.6C15.5 10 17.1 11 19 11v2c-2.2 0-4.2-1-5.5-2.5l-.6 3 2.1 2V23h-2v-6l-2.1-2-1.8 8H7Z" clip-rule="evenodd"></path>
             ) : filters.transportMode === 'bicycling' ? (
-              <path d="M15.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5zm9.8-8.5h-3.6l3.5-4.5v-2.5h-7v2h4.2l-3.5 4.5v2.5h7z"></path>
-            ) : filters.transportMode === 'transit' ? (
-              <path d="M4 16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v8zm3.5-4.33l1.69 2.26 2.48-3.09L15 14H9l-1.5-2.33zM15 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-9 8c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-8c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"></path>
+              <path fill-rule="evenodd" d="M17.5 3.5c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2ZM0 17c0-2.8 2.2-5 5-5s5 2.2 5 5-2.2 5-5 5-5-2.2-5-5Zm5 3.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5ZM19.1 11c-2.1 0-3.8-.8-5.1-2.1l-.8-.8-2.4 2.4 2.2 2.3V19h-2v-5l-3.2-2.8c-.4-.3-.6-.8-.6-1.4 0-.5.2-1 .6-1.4l2.8-2.8c.3-.4.8-.6 1.4-.6.6 0 1.1.2 1.6.6l1.9 1.9c.9.9 2.1 1.5 3.6 1.5v2Zm-.1 1c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5Zm-3.5 5c0 1.9 1.6 3.5 3.5 3.5s3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5-3.5 1.6-3.5 3.5Z" clip-rule="evenodd"></path>
             ) : (
-              <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"></path>
+              <path fill-rule="evenodd" d="M17.5 5c.66 0 1.22.42 1.42 1.01L21 12v8c0 .55-.45 1-1 1h-1c-.55 0-1-.45-1-1v-1H6v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-8l2.08-5.99C5.29 5.42 5.84 5 6.5 5h11ZM5 14.5c0 .83.67 1.5 1.5 1.5S8 15.33 8 14.5 7.33 13 6.5 13 5 13.67 5 14.5ZM17.5 16c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm-11-9.5L5 11h14l-1.5-4.5h-11Z" clip-rule="evenodd"></path>
             )}
           </svg>
           <span>
-            {filters.transportMode === 'transit' ? 'Public Transit' :
-             filters.transportMode === 'no-limit' ? 'Driving' :
-             filters.transportMode.charAt(0).toUpperCase() + filters.transportMode.slice(1)}
+            {filters.transportMode === 'no-limit' ? 'Driving' :
+              filters.transportMode.charAt(0).toUpperCase() + filters.transportMode.slice(1)}
             {' • '}
             {travelInfo.time}
           </span>

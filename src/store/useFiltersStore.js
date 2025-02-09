@@ -6,7 +6,6 @@ import { create } from 'zustand';
 const TRANSPORT_RADIUS_MAP = {
     "walking": 2000,      // 2km for walking
     "bicycling": 5000,    // 5km for biking
-    "transit": 15000,     // 15km for public transit
     "driving": 25000,     // 25km for driving
     "no-limit": 50000     // 50km for no limit (driving)
 };

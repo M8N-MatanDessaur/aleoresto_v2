@@ -246,9 +246,8 @@ const FiltersModal = ({ closeModal, onRandomize }) => {
                         >
                             <option value="walking">Walking distance (up to 2 km)</option>
                             <option value="bicycling">Biking distance (up to 5 km)</option>
-                            <option value="driving">Driving distance (up to 10 km)</option>
-                            <option value="transit">Public transit (up to 10 km)</option>
-                            <option value="no-limit">Any distance</option>
+                            <option value="driving">Driving distance (up to 25 km)</option>
+                            <option value="no-limit">Any distance (up to 50 km)</option>
                         </select>
                     </div>
 
