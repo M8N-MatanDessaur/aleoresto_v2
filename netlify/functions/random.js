@@ -56,7 +56,6 @@ async function fetchRestaurantDetails(placeId, userLocation, transportMode) {
     }
 
     const result = response.data.result;
-    console.log('Place Details Response:', JSON.stringify(result, null, 2));
 
     return {
       name: result.name || "Unknown Name",

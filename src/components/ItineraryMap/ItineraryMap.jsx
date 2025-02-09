@@ -54,7 +54,6 @@ const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails, goo
       });
 
       map.on('load', () => {
-        console.log('Map loaded successfully');
         setMapLoaded(true);
       });
 
@@ -183,7 +182,6 @@ const ItineraryMap = ({ userLocation, restaurantLocation, restaurantDetails, goo
 
       const profile = getMapboxProfile(filters.transportMode);
       const url = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${userLocation.lng},${userLocation.lat};${restaurantLocation.lng},${restaurantLocation.lat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
-      console.log(url);
       fetch(url)
         .then(response => response.json())
         .then(data => {
