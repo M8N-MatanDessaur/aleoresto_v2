@@ -33,99 +33,9 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const isDesktop = useMediaQuery('(min-width: 769px)');
-  const [travelInfo, setTravelInfo] = useState(null);
+  const [travelInfo, setTravelInfo] = useState({ distance: '', time: '' });
   const filters = useFiltersStore((state) => state.filters);
-  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
-
-  // Check if Google Maps is loaded
-  useEffect(() => {
-    const checkGoogleMaps = () => {
-      if (window.google && window.google.maps) {
-        setGoogleMapsLoaded(true);
-      } else {
-        setTimeout(checkGoogleMaps, 100);
-      }
-    };
-    checkGoogleMaps();
-  }, []);
-
-  // Calculate travel info
-  useEffect(() => {
-    const calculateTravelInfo = async () => {
-      if (!userLocation || !restaurantLocation || !googleMapsLoaded) return;
-
-      try {
-        // Create Google Maps Distance Matrix Service
-        const service = new window.google.maps.DistanceMatrixService();
-        
-        const origin = new window.google.maps.LatLng(userLocation.lat, userLocation.lng);
-        const destination = new window.google.maps.LatLng(restaurantLocation.lat, restaurantLocation.lng);
-
-        // For no-limit, we still want to show driving directions
-        const mode = filters.transportMode === 'no-limit' ? 'DRIVING' : filters.transportMode.toUpperCase();
-
-        const response = await service.getDistanceMatrix({
-          origins: [origin],
-          destinations: [destination],
-          travelMode: mode,
-          unitSystem: window.google.maps.UnitSystem.METRIC,
-          ...(mode === 'TRANSIT' && {
-            transitOptions: {
-              modes: ['SUBWAY', 'TRAIN', 'BUS'],
-              routingPreference: 'FEWER_TRANSFERS'
-            }
-          })
-        });
-
-        if (response.rows[0]?.elements[0]?.status === 'OK') {
-          const element = response.rows[0].elements[0];
-          setTravelInfo({
-            time: element.duration.text,
-            distance: element.distance.text,
-            mode: filters.transportMode
-          });
-        } else {
-          throw new Error('Distance Matrix failed');
-        }
-      } catch (error) {
-        console.error('Error calculating travel info:', error);
-        // Fallback to approximate calculation
-        const R = 6371; // Earth's radius in km
-        const dLat = (restaurantLocation.lat - userLocation.lat) * Math.PI / 180;
-        const dLon = (restaurantLocation.lng - userLocation.lng) * Math.PI / 180;
-        const a = 
-          Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(userLocation.lat * Math.PI / 180) * Math.cos(restaurantLocation.lat * Math.PI / 180) * 
-          Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const distance = (R * c).toFixed(1);
-        
-        // Rough estimation based on transport mode
-        const speeds = {
-          walking: 4.5,     // 4.5 km/h average walking speed
-          bicycling: 15,    // 15 km/h casual cycling
-          driving: 35,      // 35 km/h urban driving
-          transit: 25,      // 25 km/h public transit
-          'no-limit': 45    // 45 km/h for longer distances
-        };
-        const speed = speeds[filters.transportMode] || speeds.walking;
-        const timeInMinutes = Math.round((distance / speed) * 60);
-        
-        setTravelInfo({
-          time: timeInMinutes < 60 
-            ? `${timeInMinutes} min` 
-            : `${Math.floor(timeInMinutes/60)} h ${timeInMinutes % 60} min`,
-          distance: distance < 1 
-            ? `${Math.round(distance * 1000)} m` 
-            : `${distance} km`,
-          mode: filters.transportMode
-        });
-      }
-    };
-
-    calculateTravelInfo();
-  }, [userLocation, restaurantLocation, filters.transportMode, googleMapsLoaded]);
+  const isDesktop = useMediaQuery('(min-width: 769px)');
 
   // Initialize map
   useEffect(() => {
@@ -261,19 +171,34 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
 
       // Add route
       const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation.lng},${userLocation.lat};${restaurantLocation.lng},${restaurantLocation.lat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
-      
+      console.log(url);
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          if (data.routes?.[0]) {
-            map.addSource('route', {
-              type: 'geojson',
-              data: {
+          if (data.routes && data.routes.length > 0) {
+            const route = data.routes[0];
+            // Use the distance and duration from the API response
+            const distance = (route.distance / 1000).toFixed(1); // Convert to km
+            const duration = Math.round(route.duration / 60); // Convert to minutes
+            setTravelInfo({ distance: `${distance} km`, time: `${duration} min`, mode: filters.transportMode });
+
+            // Add the route to the map
+            if (map.getSource('route')) {
+              map.getSource('route').setData({
                 type: 'Feature',
                 properties: {},
-                geometry: data.routes[0].geometry
-              }
-            });
+                geometry: route.geometry
+              });
+            } else {
+              map.addSource('route', {
+                type: 'geojson',
+                data: {
+                  type: 'Feature',
+                  properties: {},
+                  geometry: route.geometry
+                }
+              });
+            }
 
             map.addLayer({
               id: 'route',
@@ -297,7 +222,7 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
     } catch (error) {
       console.error('Error updating map:', error);
     }
-  }, [mapLoaded, userLocation, restaurantLocation, isDesktop]);
+  }, [mapLoaded, userLocation, restaurantLocation, isDesktop, filters.transportMode]);
 
   return (
     <div className={styles.mapContainer}>
