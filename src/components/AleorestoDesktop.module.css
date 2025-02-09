@@ -151,8 +151,8 @@
 }
 
 .randomizeButton {
-  width: 65px;
-  height: 65px;
+  width: 75px;
+  height:75px;
   border-radius: 50%;
   background: var(--primary);
   color: white;

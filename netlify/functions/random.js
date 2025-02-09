@@ -48,7 +48,7 @@ async function fetchRestaurants(location, radius, filters) {
 async function fetchRestaurantDetails(placeId, userLocation, transportMode) {
   try {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,geometry,photos,price_level,rating,opening_hours,website,url,types&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,geometry,photos,price_level,rating,opening_hours,website,url,types,formatted_phone_number&key=${apiKey}`;
     const response = await axios.get(url);
 
     if (response.data.status !== "OK") {
@@ -56,6 +56,7 @@ async function fetchRestaurantDetails(placeId, userLocation, transportMode) {
     }
 
     const result = response.data.result;
+    console.log('Place Details Response:', JSON.stringify(result, null, 2));
 
     return {
       name: result.name || "Unknown Name",
@@ -74,6 +75,7 @@ async function fetchRestaurantDetails(placeId, userLocation, transportMode) {
       googleMapsUrl: `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${result.geometry?.location.lat},${result.geometry?.location.lng}`,
       types: result.types || [],
       location: result.geometry?.location || null,
+      phoneNumber: result.formatted_phone_number || null,
     };
   } catch (error) {
     console.error("Error fetching restaurant details:", error.message);
