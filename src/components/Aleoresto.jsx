@@ -145,6 +145,12 @@ const Aleoresto = ({ data, onRandomize, onFilter, setFilters, error }) => {
               outline: none;
               border: none;
             }
+              @media (max-width: 768px) {
+                .location-service-prompt {
+                background-position: center;
+                background-size: 180%;
+                }
+              }
         `}</style>
       </div>
     );
