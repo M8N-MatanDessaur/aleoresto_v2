@@ -171,7 +171,7 @@
 .noImages {
   text-align: center;
   padding: 2rem;
-  background: var(--accent);
+  background: var(--gray-200);
   color: white;
   border-radius: var(--border-radius-lg);
 }
