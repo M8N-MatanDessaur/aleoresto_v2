@@ -141,6 +141,10 @@ const Aleoresto = ({ data, onRandomize, onFilter, setFilters, error }) => {
             outline: none;
             border: none;
           }
+            .enable-location-btn:focus {
+              outline: none;
+              border: none;
+            }
         `}</style>
       </div>
     );
