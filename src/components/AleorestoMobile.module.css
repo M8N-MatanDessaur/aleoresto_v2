@@ -223,6 +223,52 @@
   margin-bottom: 1rem;
 }
 
+.travelInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.transportMethod {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.transportMethod:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.transportMethod i {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.transportDetails {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.transportDetails span:first-child {
+  font-weight: 600;
+  color: #fff;
+}
+
+.transportDetails span:last-child {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 @media (max-width: 768px) {
   .parent {
     grid-template-rows: auto auto 1fr auto;

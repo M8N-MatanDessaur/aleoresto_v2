@@ -4,11 +4,11 @@
 import { create } from 'zustand';
 
 const TRANSPORT_RADIUS_MAP = {
-    "walking": 1000,
-    "bicycling": 5000,
-    "driving": 25000,
-    "transit": 25000,
-    "no-limit": 100000
+    "walking": 2000,      // 2km for walking
+    "bicycling": 5000,    // 5km for biking
+    "transit": 15000,     // 15km for public transit
+    "driving": 25000,     // 25km for driving
+    "no-limit": 50000     // 50km for no limit (driving)
 };
 
 const useFiltersStore = create((set) => ({
@@ -28,7 +28,7 @@ const useFiltersStore = create((set) => ({
     updateTransportMode: (mode) => set((state) => ({
         filters: {
             ...state.filters,
-            transportMode: mode,
+            transportMode: mode === 'no-limit' ? 'driving' : mode,
             radius: TRANSPORT_RADIUS_MAP[mode] || TRANSPORT_RADIUS_MAP.walking
         }
     })),

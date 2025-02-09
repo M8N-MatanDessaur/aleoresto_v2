@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import styles from './ItineraryMap.module.css';
+import useFiltersStore from '@/store/useFiltersStore';
 
 if (!mapboxgl.supported()) {
   console.error('Your browser does not support Mapbox GL');
@@ -32,6 +34,98 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 769px)');
+  const [travelInfo, setTravelInfo] = useState(null);
+  const filters = useFiltersStore((state) => state.filters);
+  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
+
+  // Check if Google Maps is loaded
+  useEffect(() => {
+    const checkGoogleMaps = () => {
+      if (window.google && window.google.maps) {
+        setGoogleMapsLoaded(true);
+      } else {
+        setTimeout(checkGoogleMaps, 100);
+      }
+    };
+    checkGoogleMaps();
+  }, []);
+
+  // Calculate travel info
+  useEffect(() => {
+    const calculateTravelInfo = async () => {
+      if (!userLocation || !restaurantLocation || !googleMapsLoaded) return;
+
+      try {
+        // Create Google Maps Distance Matrix Service
+        const service = new window.google.maps.DistanceMatrixService();
+        
+        const origin = new window.google.maps.LatLng(userLocation.lat, userLocation.lng);
+        const destination = new window.google.maps.LatLng(restaurantLocation.lat, restaurantLocation.lng);
+
+        // For no-limit, we still want to show driving directions
+        const mode = filters.transportMode === 'no-limit' ? 'DRIVING' : filters.transportMode.toUpperCase();
+
+        const response = await service.getDistanceMatrix({
+          origins: [origin],
+          destinations: [destination],
+          travelMode: mode,
+          unitSystem: window.google.maps.UnitSystem.METRIC,
+          ...(mode === 'TRANSIT' && {
+            transitOptions: {
+              modes: ['SUBWAY', 'TRAIN', 'BUS'],
+              routingPreference: 'FEWER_TRANSFERS'
+            }
+          })
+        });
+
+        if (response.rows[0]?.elements[0]?.status === 'OK') {
+          const element = response.rows[0].elements[0];
+          setTravelInfo({
+            time: element.duration.text,
+            distance: element.distance.text,
+            mode: filters.transportMode
+          });
+        } else {
+          throw new Error('Distance Matrix failed');
+        }
+      } catch (error) {
+        console.error('Error calculating travel info:', error);
+        // Fallback to approximate calculation
+        const R = 6371; // Earth's radius in km
+        const dLat = (restaurantLocation.lat - userLocation.lat) * Math.PI / 180;
+        const dLon = (restaurantLocation.lng - userLocation.lng) * Math.PI / 180;
+        const a = 
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(userLocation.lat * Math.PI / 180) * Math.cos(restaurantLocation.lat * Math.PI / 180) * 
+          Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = (R * c).toFixed(1);
+        
+        // Rough estimation based on transport mode
+        const speeds = {
+          walking: 4.5,     // 4.5 km/h average walking speed
+          bicycling: 15,    // 15 km/h casual cycling
+          driving: 35,      // 35 km/h urban driving
+          transit: 25,      // 25 km/h public transit
+          'no-limit': 45    // 45 km/h for longer distances
+        };
+        const speed = speeds[filters.transportMode] || speeds.walking;
+        const timeInMinutes = Math.round((distance / speed) * 60);
+        
+        setTravelInfo({
+          time: timeInMinutes < 60 
+            ? `${timeInMinutes} min` 
+            : `${Math.floor(timeInMinutes/60)} h ${timeInMinutes % 60} min`,
+          distance: distance < 1 
+            ? `${Math.round(distance * 1000)} m` 
+            : `${distance} km`,
+          mode: filters.transportMode
+        });
+      }
+    };
+
+    calculateTravelInfo();
+  }, [userLocation, restaurantLocation, filters.transportMode, googleMapsLoaded]);
 
   // Initialize map
   useEffect(() => {
@@ -159,10 +253,10 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
 
       map.fitBounds(bounds, {
         padding: 50,
-        maxZoom: 15,
+        maxZoom: isDesktop ? 15 : 13,
         duration: 0,
-        pitch: isDesktop ? 60 : 0,
-        bearing: isDesktop ? -35 : 0
+        pitch: isDesktop ? 60 : 40,
+        bearing: isDesktop ? -35 : -25
       });
 
       // Add route
@@ -206,16 +300,32 @@ const ItineraryMap = ({ userLocation, restaurantLocation }) => {
   }, [mapLoaded, userLocation, restaurantLocation, isDesktop]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <div
-        ref={mapContainerRef}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: '10px',
-          overflow: 'hidden'
-        }}
-      />
+    <div className={styles.mapContainer}>
+      {travelInfo && (
+        <div className={styles.travelInfo}>
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            {filters.transportMode === 'walking' ? (
+              <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"></path>
+            ) : filters.transportMode === 'bicycling' ? (
+              <path d="M15.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5zm9.8-8.5h-3.6l3.5-4.5v-2.5h-7v2h4.2l-3.5 4.5v2.5h7z"></path>
+            ) : filters.transportMode === 'transit' ? (
+              <path d="M4 16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v8zm3.5-4.33l1.69 2.26 2.48-3.09L15 14H9l-1.5-2.33zM15 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-9 8c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-8c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"></path>
+            ) : (
+              <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"></path>
+            )}
+          </svg>
+          <span>
+            {filters.transportMode === 'transit' ? 'Public Transit' :
+             filters.transportMode === 'no-limit' ? 'Driving' :
+             filters.transportMode.charAt(0).toUpperCase() + filters.transportMode.slice(1)}
+            {' • '}
+            {travelInfo.time}
+          </span>
+          <span className={styles.dot}>•</span>
+          <span>{travelInfo.distance}</span>
+        </div>
+      )}
+      <div ref={mapContainerRef} className={styles.map} />
     </div>
   );
 };

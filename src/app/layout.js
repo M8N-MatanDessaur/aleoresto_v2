@@ -1,20 +1,6 @@
 import "./globals.css";
-
-function PWALifecycle() {
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then(registration => {
-        registration.addEventListener('controllerchange', () => {
-          if (window.confirm('New version available! Reload to update?')) {
-            window.location.reload();
-          }
-        });
-      });
-    }
-  }, []);
-
-  return null;
-}
+import Script from 'next/script';
+import PWALifecycle from '@/components/PWALifecycle';
 
 export const metadata = {
   metadataBase: new URL('https://www.aleoresto.ca'),
@@ -74,7 +60,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places,geometry`}
+          strategy="beforeInteractive"
+        />
+      </head>
       <body>
+        <PWALifecycle />
         {children}
       </body>
     </html>
