@@ -13,20 +13,27 @@
   overflow: hidden;
 }
 
-.travelInfo {
+.travelInfoContainer {
   position: absolute;
   bottom: 2.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+}
+
+.travelInfo {
   height: 50px;
   width: fit-content;
   min-width: 200px;
   max-width: 333px;
-  left: 50%;
-  transform: translateX(calc(-50% - 30px));
-  z-index: 10;
   background: var(--background);
   backdrop-filter: blur(8px);
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,13 +42,11 @@
   font-size: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
-  border-radius: 50px;
 }
 
 .travelInfo svg {
-  width: 16px;
-  height: 16px;
-  color: #fff;
+  width: 24px;
+  height: 24px;
 }
 
 .dot {
@@ -51,7 +56,7 @@
 }
 
 .callButton {
-display: none;
+  display: none;
 }
 
 .callButton:hover {
@@ -71,18 +76,24 @@ display: none;
 }
 
 @media (max-width: 768px) {
-  .travelInfo {
+  .travelInfoContainer {
     bottom: 5px;
-    padding: 8px 25px;
-    width: 100%;
-    border-radius: 8px;
+    width: calc(100% - 12px);
+  }
+
+  .travelInfo {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
   }
 
   .callButton {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    border-radius: 8px;
+    position: static;
+    transform: none;
+    border-radius: 10px;
     background: var(--background);
     backdrop-filter: blur(8px);
     display: flex;
@@ -93,12 +104,13 @@ display: none;
     cursor: pointer;
     transition: all 0.2s ease;
     pointer-events: auto;
-    right: -60px;
     width: 55px;
     height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  }
+
+  .callButton:hover {
+    transform: scale(1.05);
+    background: var(--primary);
   }
 
   .callButton svg {
