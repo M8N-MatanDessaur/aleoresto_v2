@@ -62,11 +62,13 @@ const Aleoresto = ({ data, onRandomize, onFilter, setFilters, error }) => {
               if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                   (position) => {
-                    window.location.reload();
+                    // Force a hard reload to ensure location state is updated
+                    window.location.href = window.location.href;
                   },
                   (error) => {
                     toast.error("Please enable location services in your browser settings.");
-                  }
+                  },
+                  { enableHighAccuracy: true }
                 );
               }
             }}
