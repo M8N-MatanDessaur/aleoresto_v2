@@ -61,6 +61,25 @@ const Aleoresto = ({ data, onRandomize, onFilter, setFilters, error }) => {
       return 'unknown';
     };
 
+    const triggerLocationPrompt = () => {
+      // This will trigger the native browser location permission popup
+      navigator.permissions.query({ name: 'geolocation' }).then(result => {
+        if (result.state === 'prompt') {
+          navigator.geolocation.getCurrentPosition(() => {}, () => {}, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          });
+        } else if (result.state === 'denied') {
+          // If already denied, show instructions to enable
+          handleLocationRequest();
+        } else {
+          // If already granted, just get the location
+          handleLocationRequest();
+        }
+      });
+    };
+
     const handleLocationRequest = () => {
       const platform = getPlatform();
       
@@ -137,7 +156,7 @@ const Aleoresto = ({ data, onRandomize, onFilter, setFilters, error }) => {
             {getPlatform() === 'android' && "On Android, please ensure location services are enabled in your device settings."}
           </p>
           <button 
-            onClick={handleLocationRequest}
+            onClick={triggerLocationPrompt}
             className="enable-location-btn"
           >
             Enable Location Services
